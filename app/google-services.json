@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "344587836774",
+    "firebase_url": "https://kkmap-2020.firebaseio.com",
+    "project_id": "kkmap-2020",
+    "storage_bucket": "kkmap-2020.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:344587836774:android:0beae240e44443c16efca7",
+        "android_client_info": {
+          "package_name": "kkbox.hackathon.kkmap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "344587836774-g322bgfiqmum68g4ehrp0f5r2mcbbv7d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYQrNyDS9d73b0MpULo9vcj4_T4vxvwOM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "344587836774-g322bgfiqmum68g4ehrp0f5r2mcbbv7d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
