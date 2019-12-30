@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="kkbox.hackathon.kkmap.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:name="kkbox.hackathon.kkmap.ui.timeline.TimelineFragment"
+        android:label="@string/title_timeline"
+        tools:layout="@layout/fragment_timeline" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="kkbox.hackathon.kkmap.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:name="kkbox.hackathon.kkmap.ui.map.MapFragment"
+        android:label="@string/title_map"
+        tools:layout="@layout/fragment_map" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="kkbox.hackathon.kkmap.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:name="kkbox.hackathon.kkmap.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>
