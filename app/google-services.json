@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "344587836774-nhuvj4udt22dkb8pd248hpa4k26opdpk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kkbox.hackathon.kkmap",
+            "certificate_hash": "7f907ff0759a03c755d3fcbe58c068bc5c108f73"
+          }
+        },
+        {
           "client_id": "344587836774-g322bgfiqmum68g4ehrp0f5r2mcbbv7d.apps.googleusercontent.com",
           "client_type": 3
         }

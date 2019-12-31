@@ -3,4 +3,14 @@
     <string name="title_timeline">Timeline</string>
     <string name="title_map">Map</string>
     <string name="title_profile">Profile</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="web_client_id">344587836774-g322bgfiqmum68g4ehrp0f5r2mcbbv7d.apps.googleusercontent.com</string>
 </resources>
