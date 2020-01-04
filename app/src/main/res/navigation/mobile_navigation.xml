@@ -22,4 +22,10 @@
         android:name="kkbox.hackathon.kkmap.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@id/navigation_main"
+        android:name="kkbox.hackathon.kkmap.ui.main.MainFragment"
+        android:label="@string/title_main"
+        tools:layout="@layout/fragment_main"
+        />
 </navigation>
