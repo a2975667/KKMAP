@@ -8,6 +8,9 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.kkbox.openapideveloper.api.Api;
+import com.kkbox.openapideveloper.auth.Auth;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
