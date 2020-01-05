@@ -64,19 +64,6 @@ public class ProfileFragment extends Fragment {
         return root;
     }
 
-//    private void authenticateKKBOX() {
-//        Auth auth = new Auth("bd5b3a9a2fd7ae2167f9b51630711ce2",
-//                "8588e290e06128a4dad92d7ef350796f", this.getActivity());
-//        ResponseFuture<JsonObject> accessToken = auth.getClientCredentialsFlow().fetchAccessToken();
-//        try{
-//            String token = accessToken.get().get("access_token").toString();
-//            Log.d("TAG", token);
-//        } catch(Exception e){
-//
-//        }
-//    }
-
-
     private AuthorizationRequest authenticateKKBOX(){
         AuthorizationServiceConfiguration serviceConfig =
                 new AuthorizationServiceConfiguration(
@@ -88,7 +75,7 @@ public class ProfileFragment extends Fragment {
                         serviceConfig, // the authorization service configuration
                         "bd5b3a9a2fd7ae2167f9b51630711ce2", // the client ID, typically pre-registered and static
                         ResponseTypeValues.CODE, // the response_type value: we want a code
-                        Uri.parse("http://com.example.app")); // the redirect URI to which the auth response is sent
+                        Uri.parse("app.example.com/oauth2redirect")); // the redirect URI to which the auth response is sent
 
         AuthorizationRequest authRequest = authRequestBuilder.build();
         return authRequest;
@@ -107,7 +94,6 @@ public class ProfileFragment extends Fragment {
         if (requestCode == 100) {
             AuthorizationResponse resp = AuthorizationResponse.fromIntent(data);
             AuthorizationException ex = AuthorizationException.fromIntent(data);
-            // ... process the response or exception ...
         } else {
             // ...
         }
