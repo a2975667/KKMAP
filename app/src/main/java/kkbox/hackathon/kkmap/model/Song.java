@@ -2,7 +2,7 @@ package kkbox.hackathon.kkmap.model;
 
 import androidx.annotation.NonNull;
 
-public class Song {
+public class Song implements MusicObject {
 
     private String kkid;
     private String songName;
@@ -34,5 +34,10 @@ public class Song {
 
     public Song fromString(String songData) {
         return new Song(songData);
+    }
+
+    @Override
+    public String getId() {
+        return null;
     }
 }
