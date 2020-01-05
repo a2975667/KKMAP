@@ -13,5 +13,9 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="web_client_id">344587836774-g322bgfiqmum68g4ehrp0f5r2mcbbv7d.apps.googleusercontent.com</string>
+    <string name="kkbox_id">bd5b3a9a2fd7ae2167f9b51630711ce2</string>
+    <string name="kkbox_secret">8588e290e06128a4dad92d7ef350796f</string>
+    <string name="api_domain_kkbox">https://api.kkbox.com/v1.1/</string>
+
     <string name="title_main">Main</string>
 </resources>

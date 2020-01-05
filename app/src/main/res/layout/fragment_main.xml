@@ -40,7 +40,7 @@
         app:layout_constraintTop_toTopOf="@+id/sont_text_main" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/albumImageView"
         android:layout_width="252dp"
         android:layout_height="229dp"
         app:layout_constraintBottom_toTopOf="@+id/pin_button"
