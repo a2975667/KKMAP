@@ -12,6 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -36,7 +37,7 @@ public class GoogleLogin extends AppCompatActivity{
     String idToken;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
-
+    private FirebaseApp fireApp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,15 +53,11 @@ public class GoogleLogin extends AppCompatActivity{
                 // Get signedIn user
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
-                //if user is signed in, we call a helper method to save the user details to Firebase
                 if (user != null) {
                     gotoMain();
-                    // User is signed in
-                    // you could place other firebase code
-                    //logic to save the user details to Firebase
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
-                    // User is signed out
+
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
             }

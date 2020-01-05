@@ -7,27 +7,20 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import kkbox.hackathon.kkmap.model.Song;
+
 public class MainViewModel extends ViewModel {
 
-    private MutableLiveData<String> mSong;
-    private MutableLiveData<String> mArtist;
+    private MutableLiveData<Song> mSong;
     public MainViewModel() {
-        mArtist = new MutableLiveData<>();
         mSong = new MutableLiveData<>();
-        mArtist.setValue("Please play some music~");
-        mSong.setValue("No One");
+        mSong.setValue(new Song("nothing", "no one"));
     }
-    public void setSong(String str) {
-        mSong.setValue(str);
+    public void setSong(Song song) {
+        mSong.setValue(song);
     }
-    public void setArtist(String str) {
-        mArtist.setValue(str);
-    }
-    public LiveData<String> getSong() {
+    public LiveData<Song> getSong() {
         return mSong;
-    }
-    public LiveData<String> getArtist() {
-        return mArtist;
     }
 
 }

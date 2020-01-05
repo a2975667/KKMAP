@@ -38,6 +38,7 @@ import com.kkbox.openapideveloper.auth.Auth;
 
 import java.util.Set;
 
+import kkbox.hackathon.kkmap.model.Song;
 import kkbox.hackathon.kkmap.ui.main.MainFragment;
 import kkbox.hackathon.kkmap.ui.main.MainViewModel;
 import kkbox.hackathon.kkmap.ui.map.MapFragment;
@@ -109,9 +110,9 @@ public class MainActivity extends AppCompatActivity {
             Log.d("TAG", "GET DATA");
             String song = intent.getStringExtra(AudioService.AUDIOSERVICE_SONG_KEY);
             String artist = intent.getStringExtra(AudioService.AUDIOSERVICE_ARTIST_KEY);
+            Song newSong = new Song(song, artist);
             MainViewModel model = ViewModelProviders.of(activity).get(MainViewModel.class);
-            model.setSong(song);
-            model.setArtist(artist);
+            model.setSong(newSong);
         }
     };
     @Override
