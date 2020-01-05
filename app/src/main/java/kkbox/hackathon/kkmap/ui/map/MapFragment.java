@@ -105,7 +105,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         }
         locationManager = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
-//        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
         String bestProvider = locationManager.getBestProvider(criteria, true);
 
         Location location = locationManager.getLastKnownLocation(bestProvider);

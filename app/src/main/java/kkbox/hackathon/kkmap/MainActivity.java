@@ -33,6 +33,9 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.kkbox.openapideveloper.api.Api;
+import com.kkbox.openapideveloper.auth.Auth;
+
 import java.util.Set;
 
 import kkbox.hackathon.kkmap.ui.main.MainFragment;
