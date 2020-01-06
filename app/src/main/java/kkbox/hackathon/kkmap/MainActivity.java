@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.media.session.MediaController;
 import android.media.session.MediaSession;
 import android.media.session.MediaSessionManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -87,10 +88,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
         LocalBroadcastManager.getInstance(this).registerReceiver(
-        mMessageReceiver, new IntentFilter(AudioService.AUDIOSERVICE_KEY));
+                mMessageReceiver, new IntentFilter(AudioService.AUDIOSERVICE_KEY));
         Integer now_page = 0;
 
 
+        // ATTENTION: This was auto-generated to handle app links.
+        Intent appLinkIntent = getIntent();
+        String appLinkAction = appLinkIntent.getAction();
+        Uri appLinkData = appLinkIntent.getData();
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

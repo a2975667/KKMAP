@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+
     <TextView
         android:id="@+id/text_notifications"
         android:layout_width="match_parent"
@@ -20,19 +21,46 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="195dp" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/login_kkbox_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login KKBOX"
-        tools:layout_editor_absoluteX="149dp"
-        tools:layout_editor_absoluteY="372dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/kk_profile_pic"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:contentDescription="@string/profile_picture"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="?android:attr/listDivider"
+                android:backgroundTint="#00FFFFFF" />
+
+            <Button
+                android:id="@+id/login_kkbox_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="#00AED8"
+                android:text="@string/kkbox_btn_string"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="149dp"
+                tools:layout_editor_absoluteY="372dp" />
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
