@@ -89,9 +89,7 @@ public class MainFragment extends Fragment implements LocationListener, Location
                                 if(searchResult.getTracks() != null){
                                     Image image = searchResult.getTracks().getData().get(0).getAlbum().getImages().get(0);
                                     try{
-
                                         Glide.with(getActivity()).load(image.getUrl()).into(albumImageView);
-
                                     } catch(Exception e){
                                         Log.d("TAG", e.toString());
                                     }

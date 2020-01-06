@@ -59,11 +59,19 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        final Button loginButton = (Button) root.findViewById(R.id.login_kkbox_btn);
+        final Button loginButton = root.findViewById(R.id.login_kkbox_btn);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Login();
+            }
+        });
+
+        final Button fakeButton = root.findViewById(R.id.fake_btn);
+        fakeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getToken();
             }
         });
 
@@ -81,23 +89,26 @@ public class ProfileFragment extends Fragment {
                 authManager.getAuthConfig(),
                 auth.getClientId(),
                 auth.getResponseType(),
-                Uri.parse(auth.getRedirectUri()))
-                .setScope(auth.getScope())
-                .build();
+                Uri.parse(auth.getRedirectUri())).build();
 
-        Intent authIntent = new Intent(this.getActivity(), LoginAuthActivity.class);
+        Intent authIntent = new Intent(this.getActivity(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this.getActivity(), authRequest.hashCode(), authIntent, 0);
 
         authService.performAuthorizationRequest(
                 authRequest,
                 pendingIntent);
 
+
+    }
+
+    public void getToken(){
         mSharedPrefRep = new SharedPreferencesRepository(this.getActivity());
         AuthState authState = mSharedPrefRep.getAuthState();
 
         if (authState != null){
+
             Token = authState.getIdToken();
-            Log.d("Token:", Token);
+            Log.d("Token:", authState.getAccessToken());
         }
     }
 

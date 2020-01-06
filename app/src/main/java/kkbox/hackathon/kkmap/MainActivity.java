@@ -2,21 +2,15 @@ package kkbox.hackathon.kkmap;
 
 
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.media.session.MediaController;
-import android.media.session.MediaSession;
-import android.media.session.MediaSessionManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,9 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
@@ -35,21 +27,27 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.kkbox.openapideveloper.api.Api;
-import com.kkbox.openapideveloper.auth.Auth;
+import net.openid.appauth.AuthorizationException;
+import net.openid.appauth.AuthorizationResponse;
+import net.openid.appauth.AuthorizationService;
+import net.openid.appauth.ClientSecretPost;
+import net.openid.appauth.TokenRequest;
+import net.openid.appauth.TokenResponse;
 
 import java.util.Set;
 
 import kkbox.hackathon.kkmap.model.Song;
-import kkbox.hackathon.kkmap.ui.main.MainFragment;
 import kkbox.hackathon.kkmap.ui.main.MainViewModel;
-import kkbox.hackathon.kkmap.ui.map.MapFragment;
+import kkbox.hackathon.kkmap.ui.profile.AuthManager;
+import kkbox.hackathon.kkmap.ui.profile.ProfileFragment;
+import kkbox.hackathon.kkmap.ui.profile.TokenService;
 
 import static kkbox.hackathon.kkmap.ui.map.MapFragment.REQUEST;
 
 public class MainActivity extends AppCompatActivity {
     private String PACKAGE_NAME = "kkbox.hackathon.kkmap";
     private AppCompatActivity activity = this;
+    private AuthorizationService mAuthService;
     private void askForNotificationPermission() {
         String alertTitle = "Permission required";
         String alertMessage = "Please granted this app notification access.";
@@ -91,11 +89,54 @@ public class MainActivity extends AppCompatActivity {
                 mMessageReceiver, new IntentFilter(AudioService.AUDIOSERVICE_KEY));
         Integer now_page = 0;
 
+        final AuthorizationResponse resp = AuthorizationResponse.fromIntent(getIntent());
 
-        // ATTENTION: This was auto-generated to handle app links.
-        Intent appLinkIntent = getIntent();
-        String appLinkAction = appLinkIntent.getAction();
-        Uri appLinkData = appLinkIntent.getData();
+        if(resp != null) {
+            Log.d("testing", "here");
+            AuthorizationException ex = AuthorizationException.fromIntent(getIntent());
+
+            final AuthManager authManager = AuthManager.getInstance(this);
+            authManager.setAuthState(resp,ex);
+
+            if (resp != null) {
+
+                ClientSecretPost clientSecretPost = new ClientSecretPost(authManager.getAuth().getClientSecret());
+                TokenRequest tokenRequest = new TokenRequest
+                        .Builder(authManager.getAuthConfig(), authManager.getAuth().getClientId())
+                        .setAuthorizationCode(resp.authorizationCode)
+                        .setRedirectUri(Uri.parse(authManager.getAuth().getRedirectUri()))
+                        .build();
+
+                mAuthService = authManager.getAuthService();
+
+                mAuthService.performTokenRequest(tokenRequest, clientSecretPost, new AuthorizationService.TokenResponseCallback() {
+                    @Override public void onTokenRequestCompleted(@Nullable TokenResponse response, @Nullable AuthorizationException ex) {
+                        if(ex == null) {
+                            authManager.updateAuthState(response,ex);
+                            ProfileFragment.Token = authManager.getAuthState().getIdToken();
+                            startService(new Intent(MainActivity.this, TokenService.class));
+                            Intent mainIntent = new Intent(MainActivity.this, MainActivity.class);
+                            startActivity(mainIntent);
+                            finish();
+                        }
+                        else{
+                            Intent loginIntent = new Intent(MainActivity.this, MainActivity.class);
+                            startActivity(loginIntent);
+                            finish();
+                        }
+                    }
+                });
+
+                // authorization completed
+            } else {
+                // authorization failed, check ex for more details
+                Intent loginIntent = new Intent(MainActivity.this,  MainActivity.class);
+                startActivity(loginIntent);
+                finish();
+            }
+        }
+
+
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
