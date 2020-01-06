@@ -39,8 +39,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="http"
-                    android:host="app.example.com"
+                    android:scheme="https"
+                    android:host="kkmao-2020.firebaseapp.com"
                     android:path="/oauth2redirect" />
             </intent-filter>
         </activity>
