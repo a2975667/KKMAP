@@ -47,7 +47,6 @@ dependencies {
     implementation 'com.kkbox:openapideveloper:1.0.0'
     implementation 'com.koushikdutta.ion:ion:3.0.8'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    //implementation project(":OpenAPIDeveloperLibrary")
     implementation 'com.koushikdutta.ion:ion:3.0.8'
     implementation 'com.squareup.okhttp3:okhttp:3.14.4'
     implementation 'net.openid:appauth:0.7.1'

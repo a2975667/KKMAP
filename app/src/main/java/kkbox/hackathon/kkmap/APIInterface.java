@@ -4,6 +4,7 @@ import java.util.Map;
 
 import kkbox.hackathon.kkmap.model.Albums;
 import kkbox.hackathon.kkmap.model.Artists;
+import kkbox.hackathon.kkmap.model.KKUsers;
 import kkbox.hackathon.kkmap.model.Search.Search;
 import kkbox.hackathon.kkmap.model.Tracks;
 import retrofit2.Call;
@@ -23,4 +24,8 @@ public interface APIInterface {
 
     @GET
     Call<Artists> getKKBOXArtists(@Url String url, @QueryMap Map<String, String> params);
+
+    @GET
+    Call<KKUsers> getKKBOXMe(@Url String url, @QueryMap Map<String, String> params);
+
 }

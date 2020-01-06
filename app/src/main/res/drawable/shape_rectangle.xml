@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 類型 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- 顏色 -->
+    <solid android:color="#00AED8" />
+    <!-- 文字與邊框的間距 -->
+    <padding
+        android:top="10dp"
+        android:right="10dp"
+        android:bottom="10dp"
+        android:left="10dp"
+        />
+    <!-- 設置圓角 -->
+    <corners android:radius="30dp" />
+    <!-- 邊框線 -->
+    <stroke
+        android:width="2dp"
+        android:color="@android:color/white"
+        android:dashGap="0dp"
+        android:dashWidth="0dp" />
+</shape>

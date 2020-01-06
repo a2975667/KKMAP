@@ -14,31 +14,27 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.google.gson.JsonObject;
-import com.koushikdutta.ion.future.ResponseFuture;
-
 import net.openid.appauth.AuthState;
-import net.openid.appauth.AuthorizationException;
 import net.openid.appauth.AuthorizationRequest;
-import net.openid.appauth.AuthorizationResponse;
 import net.openid.appauth.AuthorizationService;
-import net.openid.appauth.AuthorizationServiceConfiguration;
-import net.openid.appauth.ResponseTypeValues;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-import kkbox.hackathon.kkmap.Authenticator;
+import kkbox.hackathon.kkmap.APIClient;
+import kkbox.hackathon.kkmap.APIInterface;
 import kkbox.hackathon.kkmap.MainActivity;
 import kkbox.hackathon.kkmap.R;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
+import kkbox.hackathon.kkmap.model.Tracks;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import retrofit2.Call;
 
 public class ProfileFragment extends Fragment {
 
@@ -101,59 +97,27 @@ public class ProfileFragment extends Fragment {
 
     }
 
+
+    private final OkHttpClient client = new OkHttpClient();
+
     public void getToken(){
         mSharedPrefRep = new SharedPreferencesRepository(this.getActivity());
         AuthState authState = mSharedPrefRep.getAuthState();
 
         if (authState != null){
-
             Token = authState.getIdToken();
             Log.d("Token:", authState.getAccessToken());
+
+            Request request = new Request.Builder()
+                    .url("https://api.kkbox.com/v1.1/me")
+                    //This adds the token to the header.
+                    .addHeader("Authorization", "Bearer " + Token)
+                    .build();
+            try (Response response = client.newCall(request).execute()) {
+                Log.d("Server: ",response.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
-
-    public void logToken(){
-        Log.d("Token", ProfileFragment.Token);
-    }
-//
-//    private AuthorizationRequest authenticateKKBOX(){
-//        AuthorizationServiceConfiguration serviceConfig =
-//                new AuthorizationServiceConfiguration(
-//                        Uri.parse("https://account.kkbox.com/oauth2/authorize"), // authorization endpoint
-//                        Uri.parse("https://account.kkbox.com/oauth2/token")); // token endpoint
-//
-//        AuthorizationRequest.Builder authRequestBuilder =
-//                new AuthorizationRequest.Builder(
-//                        serviceConfig, // the authorization service configuration
-//                        "bd5b3a9a2fd7ae2167f9b51630711ce2", // the client ID, typically pre-registered and static
-//                        ResponseTypeValues.CODE, // the response_type value: we want a code
-//                        Uri.parse("https://kkmap-2020.firebaseapp.com/")).setState("1234"); // the redirect URI to which the auth response is sent
-//
-//        AuthorizationRequest authRequest = authRequestBuilder.build();
-//        return authRequest;
-//    }
-//
-//
-//    private void doAuthorization() {
-//        AuthorizationRequest authRequest = authenticateKKBOX();
-//        AuthorizationService authService = new AuthorizationService(this.getActivity());
-//
-//
-//        Intent authIntent = authService.getAuthorizationRequestIntent(authRequest);
-//        startActivityForResult(authIntent, 100);
-//
-//        AuthorizationService service = new AuthorizationService(this.getActivity());
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this.getActivity(), authRequest.hashCode(), authIntent, 0);
-//        service.performAuthorizationRequest(authRequest, pendingIntent);
-//    }
-//
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == 100) {
-//            AuthorizationResponse resp = AuthorizationResponse.fromIntent(data);
-//            AuthorizationException ex = AuthorizationException.fromIntent(data);
-//        } else {
-//            // ...
-//        }
-//    }
 }

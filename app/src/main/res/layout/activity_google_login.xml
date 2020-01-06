@@ -2,15 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="4"
     android:orientation="vertical"
     tools:context=".GoogleLogin">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
-        android:layout_height="548dp"
+        android:layout_height="380dp"
+        android:layout_weight="1"
         android:contentDescription="@string/logo"
         app:srcCompat="@drawable/splash" />
 
@@ -26,7 +28,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:gravity="center|bottom"
         android:orientation="vertical" >
 

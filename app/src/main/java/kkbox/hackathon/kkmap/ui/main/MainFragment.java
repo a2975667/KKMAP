@@ -3,13 +3,11 @@ package kkbox.hackathon.kkmap.ui.main;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,23 +16,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.annotation.Nullable;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 
-
 import kkbox.hackathon.kkmap.APIClient;
-import kkbox.hackathon.kkmap.ui.LocationEnabledFragment;
 import kkbox.hackathon.kkmap.R;
 import kkbox.hackathon.kkmap.model.Image;
 import kkbox.hackathon.kkmap.model.Search.Search;
 import kkbox.hackathon.kkmap.model.Song;
+import kkbox.hackathon.kkmap.ui.LocationEnabledFragment;
 import kkbox.hackathon.kkmap.ui.map.MapFragment;
 import kkbox.hackathon.kkmap.utils.FirebaseHandler;
 
