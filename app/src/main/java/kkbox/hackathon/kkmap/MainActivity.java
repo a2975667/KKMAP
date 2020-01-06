@@ -2,31 +2,22 @@ package kkbox.hackathon.kkmap;
 
 
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.media.session.MediaController;
-import android.media.session.MediaSession;
-import android.media.session.MediaSessionManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
@@ -34,15 +25,10 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.kkbox.openapideveloper.api.Api;
-import com.kkbox.openapideveloper.auth.Auth;
-
 import java.util.Set;
 
 import kkbox.hackathon.kkmap.model.Song;
-import kkbox.hackathon.kkmap.ui.main.MainFragment;
 import kkbox.hackathon.kkmap.ui.main.MainViewModel;
-import kkbox.hackathon.kkmap.ui.map.MapFragment;
 
 import static kkbox.hackathon.kkmap.ui.map.MapFragment.REQUEST;
 
@@ -98,8 +84,9 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    MapFragment fragment = (MapFragment) getSupportFragmentManager().getPrimaryNavigationFragment();
-                    fragment.getLocation();
+                    Intent openMainActivity= new Intent(MainActivity.this, MainActivity.class);
+                    openMainActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(openMainActivity);
                 } else {
                     Toast.makeText(this, "The app was not allowed to access your location", Toast.LENGTH_LONG).show();
                 }

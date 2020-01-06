@@ -25,13 +25,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 
 
-import java.net.URL;
-import java.util.function.Function;
-
 import kkbox.hackathon.kkmap.APIClient;
+import kkbox.hackathon.kkmap.ui.LocationEnabledFragment;
 import kkbox.hackathon.kkmap.R;
 import kkbox.hackathon.kkmap.model.Image;
 import kkbox.hackathon.kkmap.model.Search.Search;
@@ -39,7 +38,7 @@ import kkbox.hackathon.kkmap.model.Song;
 import kkbox.hackathon.kkmap.ui.map.MapFragment;
 import kkbox.hackathon.kkmap.utils.FirebaseHandler;
 
-public class MainFragment extends Fragment implements LocationListener {
+public class MainFragment extends Fragment implements LocationListener, LocationEnabledFragment {
 
     private MainViewModel mainViewModel;
     private LocationManager locationManager;
@@ -57,7 +56,7 @@ public class MainFragment extends Fragment implements LocationListener {
         songTextView = root.findViewById(R.id.sont_text_main);
         artistTextView = root.findViewById(R.id.artist_text_main);
         albumImageView = root.findViewById(R.id.albumImageView);
-        setViewModelObservr();
+        setViewModelObserver();
         final Button pinButton = root.findViewById(R.id.pin_button);
         pinButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,57 +64,79 @@ public class MainFragment extends Fragment implements LocationListener {
                 pinLocation();
             }
         });
+
+
         getLocation();
         return root;
     }
 
-    private void setViewModelObservr() {
+    private void setViewModelObserver() {
 
         mainViewModel.getSong().observe(getActivity(), new Observer<Song>() {
+
             @Override
             public void onChanged(@Nullable Song s) {
+
                 currentSong = s;
-                APIClient.getKKBOXSearch(getActivity(), s.toString(), APIClient.KKBOXSearchType.TRACK, "TW", 0, 20, null, new APIClient.Callback() {
-                    @Override
-                    public void onSuccess(@Nullable Object obj) {
-                        Search searchResult = (Search) obj;
-                        Image image = searchResult.getAlbums().getData().get(0).getImages().get(0);
-                        String url = image.getUrl();
-//                        albumImageView.setImageURI();
-                    }
+                if(getActivity() != null) {
 
-                    @Override
-                    public void onUnSuccess(int stateCode, String reason) {
-//                        finish();
-                    }
+                    APIClient.getKKBOXSearch(getActivity(), s.toString(), APIClient.KKBOXSearchType.TRACK, "TW", 0, 20, null, new APIClient.Callback() {
+                        @Override
+                        public void onSuccess(@Nullable Object obj) {
+                            if(obj != null){
+                                Search searchResult = (Search) obj;
 
-                    @Override
-                    public void onFailed() {
+                                if(searchResult.getTracks() != null){
+                                    Image image = searchResult.getTracks().getData().get(0).getAlbum().getImages().get(0);
+                                    try{
+
+                                        Glide.with(getActivity()).load(image.getUrl()).into(albumImageView);
+
+                                    } catch(Exception e){
+                                        Log.d("TAG", e.toString());
+                                    }
+                                }
+
+                            }
+                        }
+
+                        @Override
+                        public void onUnSuccess(int stateCode, String reason) {
 //                        finish();
-                    }
-                });
+                        }
+
+                        @Override
+                        public void onFailed() {
+//                        finish();
+                        }
+                    });
+                }
+
                 songTextView.setText(s.getSongName());
                 artistTextView.setText(s.getArtistName());
             }
         });
     }
 
-    private void getLocation() {
+    @Override
+    public void getLocation() {
         if (this.getActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && this.getActivity().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             this.getActivity().requestPermissions(
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     MapFragment.REQUEST);
-        }
-        locationManager = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        String bestProvider = locationManager.getBestProvider(criteria, true);
+        }else{
+            locationManager = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            String bestProvider = locationManager.getBestProvider(criteria, true);
 
-        Location location = locationManager.getLastKnownLocation(bestProvider);
-        if (location != null) {
-            this.onLocationChanged(location);
+            Location location = locationManager.getLastKnownLocation(bestProvider);
+            if (location != null) {
+                this.onLocationChanged(location);
+            }
+            locationManager.requestLocationUpdates(bestProvider, 1000, 20, this);
         }
-        locationManager.requestLocationUpdates(bestProvider, 1000, 20, this);
+
     }
 
     private void pinLocation() {

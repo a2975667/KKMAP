@@ -52,7 +52,6 @@ public class GoogleLogin extends AppCompatActivity{
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 // Get signedIn user
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-
                 if (user != null) {
                     gotoMain();
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
@@ -84,7 +83,6 @@ public class GoogleLogin extends AppCompatActivity{
         Intent intent = new Intent(GoogleLogin.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-
     }
 
     @Override
@@ -107,7 +105,7 @@ public class GoogleLogin extends AppCompatActivity{
             firebaseAuthWithGoogle(credential);
         }else{
             // Google Sign In failed, update UI appropriately
-            Log.e(TAG, "Login Unsuccessful. "+result);
+            Log.e(TAG, "Login Unsuccessful. "+result.getStatus());
             Toast.makeText(this, "Login Unsuccessful", Toast.LENGTH_SHORT).show();
         }
     }

@@ -75,7 +75,7 @@ public class ProfileFragment extends Fragment {
                         serviceConfig, // the authorization service configuration
                         "bd5b3a9a2fd7ae2167f9b51630711ce2", // the client ID, typically pre-registered and static
                         ResponseTypeValues.CODE, // the response_type value: we want a code
-                        Uri.parse("app.example.com/oauth2redirect")); // the redirect URI to which the auth response is sent
+                        Uri.parse("\"intent://example.com/api/v1/view#Intent;scheme=http;package=com.app;category=android.intent.category.BROWSABLE;component=com.app.yourActivityname;action=android.intent.action.VIEW;end\n")); // the redirect URI to which the auth response is sent
 
         AuthorizationRequest authRequest = authRequestBuilder.build();
         return authRequest;

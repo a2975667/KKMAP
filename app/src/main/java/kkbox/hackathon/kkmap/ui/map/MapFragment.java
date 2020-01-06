@@ -1,64 +1,99 @@
 package kkbox.hackathon.kkmap.ui.map;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.HashMap;
+
+import kkbox.hackathon.kkmap.SongMarker;
+import kkbox.hackathon.kkmap.ui.LocationEnabledFragment;
 import kkbox.hackathon.kkmap.R;
+import kkbox.hackathon.kkmap.utils.FirebaseHandler;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, LocationListener{
+public class MapFragment extends Fragment implements OnMapReadyCallback, LocationListener, LocationEnabledFragment {
 
     private MapView mapView;
     private GoogleMap gmap;
 
     private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
-
+    HashMap<String, SongMarker> currentSongMarkers;
     public static final int REQUEST = 112;
     private LocationManager locationManager;
     private LocationListener locationListener;
     private LatLng ny;
+    private GeoQuery songMarkerGeoQuery;
+    private FirebaseHandler.Callback geoQueryCallback;
+    private Boolean isCameraFollowUser = true;
 
-    @Override
-    public void onLocationChanged(Location loc) {
-        ny = new LatLng(loc.getLatitude(),loc.getLongitude());
-        Log.d("TEST", "onLocationChanged: "+ny.toString());
-        Log.d("TEST", String.valueOf(gmap));
-        if(gmap != null){
+    private void followUserOnMap() {
+        if( gmap != null ) {
+            gmap.moveCamera(CameraUpdateFactory.newLatLng(ny));
+            gmap.moveCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
+        }
+
+    }
+
+    private void updateGeoQueryLocation(double radius) {
+        if( songMarkerGeoQuery != null){
+            songMarkerGeoQuery.setLocation(new GeoLocation(ny.latitude, ny.longitude), radius);
+        }
+    }
+
+    private void refreshMarkersOnMap() {
+        if(gmap != null) {
             gmap.clear();
             gmap.addMarker(new MarkerOptions()
                     .position(ny)
                     .title("Current Location")
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.standing_man)));
-            gmap.moveCamera(CameraUpdateFactory.newLatLng(ny));
-            gmap.moveCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
+
+            currentSongMarkers.forEach((key, songMarker)->{
+                gmap.addMarker(
+                        new MarkerOptions()
+                                .position(songMarker.getLocation())
+                                .title(songMarker.getSong().getSongName())
+                );
+            });
+
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location loc) {
+        ny = new LatLng(loc.getLatitude(),loc.getLongitude());
+        if(gmap != null){
+            gmap.clear();
+            if(isCameraFollowUser) {
+                this.followUserOnMap();
+            }
+            updateGeoQueryLocation(10);
+            refreshMarkersOnMap();
         }
     }
 
@@ -77,16 +112,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
 
     }
 
-
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_map, container, false);
         mapView = root.findViewById(R.id.mapView);
-
+        currentSongMarkers = new HashMap<String, SongMarker>();
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
         }
+
+        geoQueryCallback = new FirebaseHandler.Callback() {
+            @Override
+            public void onSuccess(Object obj) {
+                Pair<String, SongMarker> castedObj = (Pair<String, SongMarker>) obj;
+                currentSongMarkers.put(castedObj.first, castedObj.second);
+                Log.d("onSucess", currentSongMarkers.toString());
+                refreshMarkersOnMap();
+            }
+
+            @Override
+            public void onFailure(Object obj) {
+                Log.d("onFailure", currentSongMarkers.toString());
+                currentSongMarkers.remove((String)obj);
+                refreshMarkersOnMap();
+            }
+        };
+        songMarkerGeoQuery = FirebaseHandler.getInstance().querySongMarkerWithLocation(new LatLng(0 , 0),
+                geoQueryCallback);
         locationManager = (LocationManager)
                 this.getActivity().getSystemService(Context.LOCATION_SERVICE);
         getLocation();
@@ -97,22 +149,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         return root;
     }
 
+    @Override
     public void getLocation() {
         if (this.getActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && this.getActivity().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             this.getActivity().requestPermissions(
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     REQUEST);
         }
-        locationManager = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        String bestProvider = locationManager.getBestProvider(criteria, true);
+        else {
+            locationManager = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            String bestProvider = locationManager.getBestProvider(criteria, true);
 
-        Location location = locationManager.getLastKnownLocation(bestProvider);
-        if (location != null) {
-            this.onLocationChanged(location);
+            Location location = locationManager.getLastKnownLocation(bestProvider);
+            if (location != null) {
+                this.onLocationChanged(location);
+            }
+            locationManager.requestLocationUpdates(bestProvider, 1000, 20, this);
         }
-        locationManager.requestLocationUpdates(bestProvider, 1000, 20, this);
 
     }
 
@@ -127,6 +182,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         }
 
         mapView.onSaveInstanceState(mapViewBundle);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        songMarkerGeoQuery.removeAllListeners();
     }
 
     @Override
@@ -155,6 +216,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
     }
     @Override
     public void onDestroy() {
+        songMarkerGeoQuery.removeAllListeners();
         mapView.onDestroy();
         super.onDestroy();
     }
@@ -168,7 +230,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
     public void onMapReady(GoogleMap googleMap) {
         gmap = googleMap;
         gmap.getUiSettings().setAllGesturesEnabled(true);
-
+        getLocation();
+        GoogleMap.OnMapClickListener onMapClickListener = new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                isCameraFollowUser = true;
+            }
+        };
+        gmap.setOnMapClickListener(onMapClickListener);
+        GoogleMap.OnMarkerClickListener onMarkerClickListener = new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                isCameraFollowUser = false;
+                return false;
+            }
+        };
+        gmap.setOnMarkerClickListener(onMarkerClickListener);
         return;
     }
 }

@@ -1,9 +1,11 @@
 package kkbox.hackathon.kkmap;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaMetadata;
 import android.media.session.MediaController;
 import android.media.session.MediaSessionManager;
@@ -26,12 +28,14 @@ public class AudioService extends NotificationListenerService {
     public final static String AUDIOSERVICE_KEY = "AUDIOSERVICE_KEY";
     public final static String AUDIOSERVICE_ARTIST_KEY = "AUDIOSERVICE_ARTIST_KEY";
     public final static String AUDIOSERVICE_SONG_KEY = "AUDIOSERVICE_SONG_KEY";
-
+    public final static String NOTIFY_AUDIO_SERVICE = "kkbox.hackathon.kkmap.NOTIFY_AUDIO_SERVICE";
     MediaSessionManager mediaSessionManager;
     ComponentName componentName;
     MediaController controller;
     public String currentArtist = "";
     public String currentSong = "";
+    private NLServiceReceiver nlservicereciver;
+
     MediaSessionManager.OnActiveSessionsChangedListener sessionsChangedListener = new MediaSessionManager.OnActiveSessionsChangedListener() {
         @Override
         public void onActiveSessionsChanged(@Nullable List<MediaController> controllers) {
@@ -40,24 +44,27 @@ public class AudioService extends NotificationListenerService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     Log.d(TAG, "onActiveSessionsChanged: controller = " + controller.getPackageName());
                     MediaMetadata meta = controller.getMetadata();
-                    currentArtist = meta.getString(MediaMetadata.METADATA_KEY_ARTIST);
-                    currentSong =  meta.getString(MediaMetadata.METADATA_KEY_TITLE);
+                    if(meta != null){
+                        currentArtist = meta.getString(MediaMetadata.METADATA_KEY_ARTIST);
+                        currentSong =  meta.getString(MediaMetadata.METADATA_KEY_TITLE);
 
-                    Log.d(TAG, "onCreate: artist = " + currentArtist);
-                    Log.d(TAG, "onCreate: song = " + currentSong);
-                    sendMessageToActivity();
+                        Log.d(TAG, "onCreate: artist = " + currentArtist);
+                        Log.d(TAG, "onCreate: song = " + currentSong);
+                        sendMessageToActivity();
+                    }
+
                 }
             }
         }
     };
 
-    private void sendMessageToActivity() {
+    public void sendMessageToActivity() {
         Intent intent = new Intent(this.AUDIOSERVICE_KEY);
         intent.putExtra(this.AUDIOSERVICE_ARTIST_KEY, this.currentArtist);
         intent.putExtra(this.AUDIOSERVICE_SONG_KEY, this.currentSong);
-
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
+
     @Override
     public void onNotificationPosted(StatusBarNotification sbn){
         // Implement what you want here
@@ -68,12 +75,14 @@ public class AudioService extends NotificationListenerService {
             controller = mediaController;
             Log.d(TAG, "onSession: controller = " + controller.getPackageName());
             MediaMetadata meta = controller.getMetadata();
-            currentArtist = meta.getString(MediaMetadata.METADATA_KEY_ARTIST);
-            currentSong =  meta.getString(MediaMetadata.METADATA_KEY_TITLE);
+            if(meta != null){
+                currentArtist = meta.getString(MediaMetadata.METADATA_KEY_ARTIST);
+                currentSong =  meta.getString(MediaMetadata.METADATA_KEY_TITLE);
 
-            Log.d(TAG, "onSession: artist = " + currentArtist);
-            Log.d(TAG, "onSession: song = " + currentSong);
-            sendMessageToActivity();
+                Log.d(TAG, "onCreate: artist = " + currentArtist);
+                Log.d(TAG, "onCreate: song = " + currentSong);
+                sendMessageToActivity();
+            }
 
         }
     }
@@ -86,7 +95,10 @@ public class AudioService extends NotificationListenerService {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "TEST");
-
+        nlservicereciver = new NLServiceReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(NOTIFY_AUDIO_SERVICE);
+        registerReceiver(nlservicereciver,filter);
         componentName = new ComponentName(this, AudioService.class);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             mediaSessionManager = (MediaSessionManager) getSystemService(Context.MEDIA_SESSION_SERVICE);
@@ -98,12 +110,14 @@ public class AudioService extends NotificationListenerService {
                 controller = mediaController;
                 Log.d(TAG, "onSession: controller = " + controller.getPackageName());
                 MediaMetadata meta = controller.getMetadata();
-                currentArtist = meta.getString(MediaMetadata.METADATA_KEY_ARTIST);
-                currentSong =  meta.getString(MediaMetadata.METADATA_KEY_TITLE);
+                if(meta != null){
+                    currentArtist = meta.getString(MediaMetadata.METADATA_KEY_ARTIST);
+                    currentSong =  meta.getString(MediaMetadata.METADATA_KEY_TITLE);
 
-                Log.d(TAG, "onSession: artist = " + currentArtist);
-                Log.d(TAG, "onSession: song = " + currentSong);
-                sendMessageToActivity();
+                    Log.d(TAG, "onCreate: artist = " + currentArtist);
+                    Log.d(TAG, "onCreate: song = " + currentSong);
+                    sendMessageToActivity();
+                }
 
             }
         }
@@ -112,4 +126,21 @@ public class AudioService extends NotificationListenerService {
     public IBinder onBind(Intent intent) {
         return super.onBind(intent);
     }
+
+    class NLServiceReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getStringExtra("command").equals("update")){
+                sendMessageToActivity();
+            }
+
+        }
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(nlservicereciver);
+    }
+
 }
