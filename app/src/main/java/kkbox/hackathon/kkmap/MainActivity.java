@@ -2,22 +2,32 @@ package kkbox.hackathon.kkmap;
 
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.media.session.MediaController;
+import android.media.session.MediaSession;
+import android.media.session.MediaSessionManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
@@ -25,10 +35,15 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.kkbox.openapideveloper.api.Api;
+import com.kkbox.openapideveloper.auth.Auth;
+
 import java.util.Set;
 
 import kkbox.hackathon.kkmap.model.Song;
+import kkbox.hackathon.kkmap.ui.main.MainFragment;
 import kkbox.hackathon.kkmap.ui.main.MainViewModel;
+import kkbox.hackathon.kkmap.ui.map.MapFragment;
 
 import static kkbox.hackathon.kkmap.ui.map.MapFragment.REQUEST;
 
@@ -73,10 +88,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
         LocalBroadcastManager.getInstance(this).registerReceiver(
-        mMessageReceiver, new IntentFilter(AudioService.AUDIOSERVICE_KEY));
+                mMessageReceiver, new IntentFilter(AudioService.AUDIOSERVICE_KEY));
         Integer now_page = 0;
 
 
+        // ATTENTION: This was auto-generated to handle app links.
+        Intent appLinkIntent = getIntent();
+        String appLinkAction = appLinkIntent.getAction();
+        Uri appLinkData = appLinkIntent.getData();
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

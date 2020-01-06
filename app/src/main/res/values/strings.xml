@@ -8,7 +8,7 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
+    <string name="welcome">"Login with Google to continue!"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
@@ -18,4 +18,8 @@
     <string name="api_domain_kkbox">https://api.kkbox.com/v1.1/</string>
 
     <string name="title_main">Main</string>
+    <string name="kkbox_btn_string">Login with KKBOX</string>
+    <string name="profile_picture">profile_picture</string>
+    <string name="cow">Welcome</string>
+    <string name="logo">logo</string>
 </resources>
