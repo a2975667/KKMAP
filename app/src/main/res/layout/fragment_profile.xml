@@ -60,6 +60,21 @@
                 android:textSize="18sp"
                 tools:layout_editor_absoluteX="149dp"
                 tools:layout_editor_absoluteY="372dp" />
+
+            <Button
+                android:id="@+id/fake_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="#00AED8"
+                android:text="get Token"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="149dp"
+                tools:layout_editor_absoluteY="372dp" />
         </LinearLayout>
     </ScrollView>
 

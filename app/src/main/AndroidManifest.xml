@@ -28,24 +28,8 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity
-            android:name="net.openid.appauth.RedirectUriReceiverActivity"
-            tools:node="replace"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="http"
-                    android:host="app.example.com"
-                    android:path="/oauth2redirect" />
-            </intent-filter>
-        </activity>
         <activity android:name=".MainActivity">
-            <tools:validation testUrl="https://kkmap-2020.firebaseapp.com/oauth_redirect" />
+            <tools:validation testUrl="https://kkmap-2020.firebaseapp.com/" />
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -55,7 +39,7 @@
                 <data
                     android:scheme="https"
                     android:host="kkmap-2020.firebaseapp.com"
-                    android:pathPattern="/oauth_redirect" />
+                    android:pathPattern="/" />
             </intent-filter>
         </activity>
 
